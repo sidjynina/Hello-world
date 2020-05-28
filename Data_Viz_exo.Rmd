@@ -1,0 +1,53 @@
+---
+title: "Data_viz_exo"
+output: html_document
+---
+
+```{r setup}
+library(Hmisc)
+library(data.table)
+data = read.csv("insurance.csv")
+describe(data)
+dt = data
+dt = data.table(dt)
+
+
+# voir les lags et le points a la place de "c"
+
+# Utiliser les clés : ‘setkey'
+
+# Syntaxe : setkey(nom_data.table,nom_colonne)
+# Sélectionner : Syntaxe : dt["valeur_prise_par_variable_clé"]
+setkey(dt,region)
+setkey(dt,sex)
+setkey(dt,age)
+
+dt["female"]
+
+
+dt[-order(age)]
+dt[ c(15:25, 575:585),] # a voir comment ça marche
+
+dt$age = as.character(dt$age)
+setkey(dt,age)
+dt[c("30", "34", "38")]
+
+dt[setkey(dt,smoker), smoker = yes] # ???
+
+ 
+
+```
+
+```{r}
+dt[,.(moyennes_enfants=mean(children)), by=sex]
+
+
+dt[,.(somme_charges=sum(charges)), by=age]
+
+# voir SD par regroupement
+
+dt[,.(somme_charges=sum(charges), by=age)][ somme_charges >= 350000 , seuil350k = "TRUE"] # ne fonctionne pas
+dt[,.N,by=age][order(-N)]
+
+```
+
